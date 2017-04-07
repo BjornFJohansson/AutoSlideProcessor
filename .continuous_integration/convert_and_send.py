@@ -184,7 +184,8 @@ if added_files:
             print(result.stdout)
             print()
             os.chdir(cwd)
-            npth = [pth.with_suffix(sfx),]
+            sfx = ".html"
+            npth = [pth, pth.with_suffix(sfx),]
         else:
             npth = [pth]
         for npth in npths:
