@@ -32,7 +32,7 @@ def newsuffix(p):
 
 TOKEN = os.getenv("DROPBOXTOKEN", "NONE")
 
-If TOKEN == "NONE":
+if TOKEN == "NONE":
     print("DROPBOXTOKEN env variable not set!")
     sys.exit(1)
 
