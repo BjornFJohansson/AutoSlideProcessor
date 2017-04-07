@@ -141,7 +141,7 @@ if added_files:
             print(" ".join(result.args))
             print(result.stdout)
             print()
-            npth = [pth.with_suffix(".pdf"),]
+            npths = [pth.with_suffix(".pdf"),]
         elif pth.suffix.lower() == ".ods":  # calc --> Excel
             cmd = "libreoffice --invisible --convert-to xlsx".split()
             cmd.extend((str(pth), "--outdir", str(pth.parent)))
@@ -150,7 +150,7 @@ if added_files:
             print(" ".join(result.args))
             print(result.stdout)      
             print()
-            npth = [pth.with_suffix(".xlsx"),]
+            npths = [pth.with_suffix(".xlsx"),]
         elif pth.suffix.lower() == ".md":  # markdown --> pdf
             cwd = os.getcwd()
             os.chdir(str(pth.parent))       
@@ -169,7 +169,7 @@ if added_files:
             print(result.stdout)
             print()
             os.chdir(cwd)
-            npth = [pth.with_suffix(sfx),]
+            npths = [pth.with_suffix(sfx),]
         elif pth.suffix.lower() in (".txt", ".fa", ".gb", ".fasta"):
             with open(str(pth)) as f:
                 new = re.sub("\r?\n", "\r\n", f.read())
@@ -185,9 +185,9 @@ if added_files:
             print()
             os.chdir(cwd)
             sfx = ".html"
-            npth = [pth, pth.with_suffix(sfx),]
+            npths = [pth, pth.with_suffix(sfx),]
         else:
-            npth = [pth]
+            npths = [pth]
         for npth in npths:
             rempth = FOLDERLOCATION.joinpath(FOLDERNAME, npth)
             print("uploading", npth, "to", rempth)
