@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import pathlib   
+
+##########################################################
+FOLDERLOCATION = pathlib.Path("/Public/BLACKBOARD")
+FOLDERNAME     = pathlib.Path("MyAwesomeCourse")
+##########################################################
+
 import re
 import os
 import sys
-import pathlib      
+   
 import subprocess
 import codecs
 import dropbox      # https://pypi.python.org/pypi/dropbox
@@ -13,11 +20,6 @@ print("dropbox.__version__ =", dropbox.__version__)
 import requests
 print("requests.__version__=", requests.__version__)
 del requests
-
-##########################################################
-FOLDERLOCATION = pathlib.Path("/Public/BLACKBOARD")
-FOLDERNAME     = pathlib.Path("MyAwesomeCourse")
-##########################################################
 
 def newsuffix(p):
     try:
@@ -173,9 +175,18 @@ if added_files:
                 new = re.sub("\r?\n", "\r\n", f.read())
             with open(str(pth), "w") as f:
                 f.write(new)
+        elif pth.suffix.lower() == ".ipynb":
+            cmd = 'jupyter nbconvert'.split()
+            cmd.append(pth.name)
+            print(" ".join(cmd)) 
+            result = subprocess.run( cmd, stdout=subprocess.PIPE)
+            print(" ".join(result.args))
+            print(result.stdout)
+            print()
+            os.chdir(cwd)
+            npth = pth.with_suffix(sfx)
         else:
-            npth = pth
-            
+            npth = pth            
         rempth = FOLDERLOCATION.joinpath(FOLDERNAME, npth)
         print("uploading", npth, "to", rempth)
         print()
