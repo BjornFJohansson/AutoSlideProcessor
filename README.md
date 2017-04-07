@@ -1,7 +1,7 @@
 ---
 title: Molecular Genetics and Bioinformatics / Genética Molecular e Bioinformática 2704N9 2016-17
 ---
-# My awesome course 2016-17
+# My Awesome Course 2016-17
 
 [![Build Status](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor.svg?branch=master)](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor)
 [Licenciatura em Biologia Aplicada 2yr](http://www.bio.uminho.pt/Default.aspx?tabid=7&pageid=112&lang=pt-PT)
@@ -15,11 +15,9 @@ Location:
 
 Teacher: Björn Johansson <bjorn_johansson@bio.uminho.pt>
 
-Delegada: Maria Pereira
+Delegada: Maria Aluna
 
-Presence sheet [here]().
-
-Course file dropbox [here]().
+Course file dropbox [here](https://www.dropbox.com/sh/a4vwd1ux8h81mg8/AADceqVoh96TOCaNwUZvI976a?dl=0).
 
 Course literature: [GENE CLONING AND DNA ANALYSIS An Introduction T.A. BROWN 7ed](http://bcs.wiley.com/he-bcs/Books?action=index&bcsId=9980&itemId=1119072573)
 

@@ -141,7 +141,7 @@ if added_files:
             print(" ".join(result.args))
             print(result.stdout)
             print()
-            npth = pth.with_suffix(".pdf")
+            npth = [pth.with_suffix(".pdf"),]
         elif pth.suffix.lower() == ".ods":  # calc --> Excel
             cmd = "libreoffice --invisible --convert-to xlsx".split()
             cmd.extend((str(pth), "--outdir", str(pth.parent)))
@@ -150,7 +150,7 @@ if added_files:
             print(" ".join(result.args))
             print(result.stdout)      
             print()
-            npth = pth.with_suffix(".xlsx")
+            npth = [pth.with_suffix(".xlsx"),]
         elif pth.suffix.lower() == ".md":  # markdown --> pdf
             cwd = os.getcwd()
             os.chdir(str(pth.parent))       
@@ -169,7 +169,7 @@ if added_files:
             print(result.stdout)
             print()
             os.chdir(cwd)
-            npth = pth.with_suffix(sfx)
+            npth = [pth.with_suffix(sfx),]
         elif pth.suffix.lower() in (".txt", ".fa", ".gb", ".fasta"):
             with open(str(pth)) as f:
                 new = re.sub("\r?\n", "\r\n", f.read())
@@ -184,27 +184,28 @@ if added_files:
             print(result.stdout)
             print()
             os.chdir(cwd)
-            npth = pth.with_suffix(sfx)
+            npth = [pth.with_suffix(sfx),]
         else:
-            npth = pth            
-        rempth = FOLDERLOCATION.joinpath(FOLDERNAME, npth)
-        print("uploading", npth, "to", rempth)
-        print()
-        with npth.open('rb') as f:
-            try:
-                dbx.files_upload(f, 
-                                 str(rempth), 
-                                 mode=dropbox.files.WriteMode('overwrite'))
-            except dropbox.exceptions.ApiError as err:
-                if (err.error.is_path() and
-                        err.error.get_path().error.is_insufficient_space()):
-                    sys.exit("ERROR: Cannot back up; insufficient space.")
-                elif err.user_message_text:
-                    print(err.user_message_text)
-                    #sys.exit()
-                else:
-                    print(err)
-                    #sys.exit()        
+            npth = [pth]
+        for npth in npths:
+            rempth = FOLDERLOCATION.joinpath(FOLDERNAME, npth)
+            print("uploading", npth, "to", rempth)
+            print()
+            with npth.open('rb') as f:
+                try:
+                    dbx.files_upload(f, 
+                                     str(rempth), 
+                                     mode=dropbox.files.WriteMode('overwrite'))
+                except dropbox.exceptions.ApiError as err:
+                    if (err.error.is_path() and
+                            err.error.get_path().error.is_insufficient_space()):
+                        sys.exit("ERROR: Cannot back up; insufficient space.")
+                    elif err.user_message_text:
+                        print(err.user_message_text)
+                        #sys.exit()
+                    else:
+                        print(err)
+                        #sys.exit()        
 else:
     print("NO new paths added to remote\n")
 
