@@ -42,6 +42,9 @@ On push:
 * Markdown (.md) files are converted into PDFs using pandoc
 * Static html files are made from Jupyter notebook files (.ipynb)
 
+![scheme](pictures/scheme.png)
+
+
 All files are pushed to a dropbox.
 
 1. TravisCI clones the repository.
