@@ -1,7 +1,11 @@
----
-title: Molecular Genetics and Bioinformatics / Genética Molecular e Bioinformática 2704N9 2016-17
----
 # My Awesome Course 2016-17
+
+This repository shows how to distribute course files to students using Github and TravisCI.
+
+I teach courses mostly in molecular biology and biotechnology. 
+My computer runs Ubuntu linux, and I use the LibreOffice package, while my students mostly use Windows or Macs with Ms Office.
+This means that files that I make are not always compatible with  
+ 
 
 [![Build Status](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor.svg?branch=master)](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor)
 [Licenciatura em Biologia Aplicada 2yr](http://www.bio.uminho.pt/Default.aspx?tabid=7&pageid=112&lang=pt-PT)
@@ -33,19 +37,15 @@ Extra literature:
 * [Stryer Biochemistry (5ed free)](https://www.ncbi.nlm.nih.gov/books/NBK21154/)
 * [The Selfish Gene](https://www.amazon.com/Selfish-Gene-Popular-Science/dp/0192860925/ref=cm_cr_arp_d_product_top?ie=UTF8)
 
-## About these files
+## How it works
 
 These files and folders are stored in a repository on [Github](https://github.com).
-On push: 
-
-* PDF files are created from Libreoffice Writer and Impress files on [TravisCI](https://travis-ci.com).
-* Markdown (.md) files are converted into PDFs using pandoc
-* Static html files are made from Jupyter notebook files (.ipynb)
+On pushing file to the repository, automatic conversions are carried out as depicted in the figure below.
+If there is a README.md, this file is converted into html.
 
 ![scheme](pictures/scheme.png)
 
-
-All files are pushed to a dropbox.
+After processing, all files are pushed to a dropbox using a Token specified as an environment variable..
 
 1. TravisCI clones the repository.
 2. git rev-list HEAD gives a list of all SHA1 sums of all commits.
@@ -54,3 +54,6 @@ All files are pushed to a dropbox.
 5. Files that does not exist or that have a name or folder that begins with a "_" are removed from the list.
 6. Files are converted
 7. The files in the list (or converted files) are pushed to a shared dropbox.
+
+## setup
+
