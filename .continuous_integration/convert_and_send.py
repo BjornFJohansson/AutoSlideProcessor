@@ -166,7 +166,7 @@ if added_files:
                 sfx=".html"
             else:
                 cmd = 'pandoc --latex-engine=xelatex'.split()
-                cmd.append(pth.name)
+                cmd.append('"{}"'.format(pth.name))
                 cmd.append("-o")
                 cmd.append('"{}"'.format(pth.with_suffix('.pdf').name))
                 sfx=".pdf"
