@@ -6,6 +6,7 @@ import pathlib
 ##########################################################
 FOLDERLOCATION = pathlib.Path("/Public/BLACKBOARD")
 FOLDERNAME     = pathlib.Path("MyAwesomeCourse")
+TOKENNAME      = "DROPBOXTOKEN"
 ##########################################################
 
 import re
@@ -38,6 +39,8 @@ def newsuffix(p):
 #============================== Connect to Dropbox ===========================
 with open(".continuous_integration/dropbox_token.txt", "r") as f:
     TOKEN = f.read().strip()
+if not TOKEN:
+    TOKEN = os.getenv(TOKENNAME, "NONE")
 dbx = dropbox.Dropbox(TOKEN)
 try:
     dbx.users_get_current_account()
