@@ -13,6 +13,7 @@ script:
   - sudo apt-get update -y
   - sudo apt-get install -y libreoffice-writer libreoffice-impress libreoffice-calc
   - sudo apt-get install pandoc
+  - pandoc -v
   - python .continuous_integration/convert_and_send.py
 
 cache:
