@@ -162,7 +162,7 @@ if added_files:
             os.chdir(str(pth.parent))
             print(os.listdir("."))
             if str(pth) == "README.md":
-                cmd = "pandoc README.md -o README.html --self-contained".split() # --css .continuous_integration/pandoc.css
+                cmd = "pandoc --self-contained --to=html -o README.html README.md".split() # --css .continuous_integration/pandoc.css
                 sfx=".html"
             else:
                 cmd = 'pandoc --latex-engine=xelatex'.split()
