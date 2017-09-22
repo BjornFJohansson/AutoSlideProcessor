@@ -189,7 +189,7 @@ if added_files:
         print()
         with npth.open('rb') as f:
             try:
-                dbx.files_upload(f, 
+                dbx.files_upload(f.read(), 
                                  str(rempth), 
                                  mode=dropbox.files.WriteMode('overwrite'))
             except dropbox.exceptions.ApiError as err:

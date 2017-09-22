@@ -1,12 +1,12 @@
 sudo: required
 language: python
 python:
-  - "3.5"
+  - "3.6"
 
 script:
   - sudo apt-get install texlive-xetex
   - sudo apt-get install texlive-latex-recommended
-  - pip install -I dropbox==6.9.0
+  - pip install -I dropbox
   - pip install jupyter
   - sudo apt-get install python-software-properties
   - sudo add-apt-repository -y ppa:libreoffice/ppa
