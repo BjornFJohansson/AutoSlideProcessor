@@ -22,6 +22,7 @@ import requests
 print("requests.__version__=", requests.__version__)
 del requests
 
+
 ########################################################
 #with open(".cached_sha1_checksum/last.sha1", "w") as f:
 #    f.write('f14ba6fab9f5e3ff72ce21f90a10f2de4d7d186f')
@@ -158,7 +159,8 @@ if added_files:
             npth = pth.with_suffix(".xlsx")
         elif pth.suffix.lower() == ".md":  # markdown --> pdf
             cwd = os.getcwd()
-            os.chdir(str(pth.parent))       
+            os.chdir(str(pth.parent))
+            print(os.listdir("."))
             if str(pth) == "README.md":
                 cmd = "pandoc README.md -o README.html --self-contained".split() # --css .continuous_integration/pandoc.css
                 sfx=".html"
