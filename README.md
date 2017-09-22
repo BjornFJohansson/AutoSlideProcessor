@@ -8,6 +8,7 @@ I also like ot keep files that I do not share with students. The TravisSlideProc
  
 # My Awesome Course 2016-17
 
+[![Build Status](TravisSlideProcessor.svg)](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor)
 
 Course:
 - [Licenciatura em Biologia Aplicada 2yr](http://www.bio.uminho.pt/Default.aspx?tabid=7&pageid=112&lang=pt-PT)
