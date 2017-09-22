@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pathlib      
-# only in python 3, see https://pypi.python.org/pypi/pathlib2/2.1.0 for python 2.7
+import pathlib   
+
 ##########################################################
 FOLDERLOCATION = pathlib.Path("/Public/BLACKBOARD")
 FOLDERNAME     = pathlib.Path("MyAwesomeCourse")
@@ -11,7 +11,7 @@ FOLDERNAME     = pathlib.Path("MyAwesomeCourse")
 import re
 import os
 import sys
-
+   
 import subprocess
 import codecs
 import dropbox      # https://pypi.python.org/pypi/dropbox
@@ -20,11 +20,6 @@ print("dropbox.__version__ =", dropbox.__version__)
 import requests
 print("requests.__version__=", requests.__version__)
 del requests
-
-########################################################
-#with open(".cached_sha1_checksum/last.sha1", "w") as f:
-#    f.write('f14ba6fab9f5e3ff72ce21f90a10f2de4d7d186f')
-########################################################
 
 def newsuffix(p):
     try:
@@ -36,16 +31,19 @@ def newsuffix(p):
         return p.suffix.lower()
         
 #============================== Connect to Dropbox ===========================
-with open(".continuous_integration/dropbox_token.txt", "r") as f:
-    TOKEN = f.read().strip()
+
+TOKEN = os.getenv("DROPBOXTOKEN", "NONE")
+
+if TOKEN == "NONE":
+    print("DROPBOXTOKEN env variable not set!")
+    sys.exit(1)
+
 dbx = dropbox.Dropbox(TOKEN)
 try:
     dbx.users_get_current_account()
 except dropbox.exceptions.AuthError as err:
     sys.exit("ERROR: Invalid access token; try re-generating an access token"
              "from the app console on the web.")
-
-    
 #===============check if remote folder is empty ==============================        
 
 
@@ -143,7 +141,7 @@ if added_files:
             print(" ".join(result.args))
             print(result.stdout)
             print()
-            npth = pth.with_suffix(".pdf")
+            npths = [pth.with_suffix(".pdf"),]
         elif pth.suffix.lower() == ".ods":  # calc --> Excel
             cmd = "libreoffice --invisible --convert-to xlsx".split()
             cmd.extend((str(pth), "--outdir", str(pth.parent)))
@@ -152,7 +150,7 @@ if added_files:
             print(" ".join(result.args))
             print(result.stdout)      
             print()
-            npth = pth.with_suffix(".xlsx")
+            npths = [pth.with_suffix(".xlsx"),]
         elif pth.suffix.lower() == ".md":  # markdown --> pdf
             cwd = os.getcwd()
             os.chdir(str(pth.parent))       
@@ -171,34 +169,44 @@ if added_files:
             print(result.stdout)
             print()
             os.chdir(cwd)
-            npth = pth.with_suffix(sfx)
+            npths = [pth.with_suffix(sfx),]
         elif pth.suffix.lower() in (".txt", ".fa", ".gb", ".fasta"):
             with open(str(pth)) as f:
                 new = re.sub("\r?\n", "\r\n", f.read())
             with open(str(pth), "w") as f:
                 f.write(new)
-            npth = pth
+        elif pth.suffix.lower() == ".ipynb":
+            cmd = 'jupyter nbconvert'.split()
+            cmd.append(pth.name)
+            print(" ".join(cmd)) 
+            result = subprocess.run( cmd, stdout=subprocess.PIPE)
+            print(" ".join(result.args))
+            print(result.stdout)
+            print()
+            os.chdir(cwd)
+            sfx = ".html"
+            npths = [pth, pth.with_suffix(sfx),]
         else:
-            npth = pth
-            
-        rempth = FOLDERLOCATION.joinpath(FOLDERNAME, npth)
-        print("uploading", npth, "to", rempth)
-        print()
-        with npth.open('rb') as f:
-            try:
-                dbx.files_upload(f, 
-                                 str(rempth), 
-                                 mode=dropbox.files.WriteMode('overwrite'))
-            except dropbox.exceptions.ApiError as err:
-                if (err.error.is_path() and
-                        err.error.get_path().error.is_insufficient_space()):
-                    sys.exit("ERROR: Cannot back up; insufficient space.")
-                elif err.user_message_text:
-                    print(err.user_message_text)
-                    #sys.exit()
-                else:
-                    print(err)
-                    #sys.exit()        
+            npths = [pth]
+        for npth in npths:
+            rempth = FOLDERLOCATION.joinpath(FOLDERNAME, npth)
+            print("uploading", npth, "to", rempth)
+            print()
+            with npth.open('rb') as f:
+                try:
+                    dbx.files_upload(f, 
+                                     str(rempth), 
+                                     mode=dropbox.files.WriteMode('overwrite'))
+                except dropbox.exceptions.ApiError as err:
+                    if (err.error.is_path() and
+                            err.error.get_path().error.is_insufficient_space()):
+                        sys.exit("ERROR: Cannot back up; insufficient space.")
+                    elif err.user_message_text:
+                        print(err.user_message_text)
+                        #sys.exit()
+                    else:
+                        print(err)
+                        #sys.exit()        
 else:
     print("NO new paths added to remote\n")
 
