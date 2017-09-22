@@ -5,20 +5,17 @@ python:
 
 script:
   - sudo wget --quiet https://github.com/jgm/pandoc/releases/download/1.19.2.1/pandoc-1.19.2.1-1-amd64.deb -O _pandoc.deb
-  - sudo dpkg -i _pandoc.deb 
-#  - sudo apt-get install pandoc
-#  - pandoc -v
-#  - pandoc --self-contained --to=html -o README.html README.md
-#  - ls
+  - sudo dpkg -i _pandoc.deb
   - sudo apt-get install texlive-xetex
   - sudo apt-get install texlive-latex-recommended
-  - pip install -I dropbox
-  - pip install jupyter
-  - sudo apt-get install python-software-properties
-  - sudo add-apt-repository -y ppa:libreoffice/ppa
-  - sudo apt-get update -y
-  - sudo apt-get install -y libreoffice-writer libreoffice-impress libreoffice-calc
-  - python .continuous_integration/convert_and_send.py
+  - pandoc --latex-engine=xelatex "README (copy).md" -o "README (copy).pdf"
+#  - pip install -I dropbox
+#  - pip install jupyter
+#  - sudo apt-get install python-software-properties
+#  - sudo add-apt-repository -y ppa:libreoffice/ppa
+#  - sudo apt-get update -y
+#  - sudo apt-get install -y libreoffice-writer libreoffice-impress libreoffice-calc
+#  - python .continuous_integration/convert_and_send.py
 
 cache:
   wget: true
