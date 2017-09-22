@@ -8,6 +8,7 @@ script:
   - sudo dpkg -i _pandoc.deb
   - sudo apt-get install texlive-xetex
   - sudo apt-get install texlive-latex-recommended
+  - sudo apt-get install texlive-latex-extra
   - pandoc --latex-engine=xelatex "README (copy).md" -o "README (copy).pdf"
 #  - pip install -I dropbox
 #  - pip install jupyter
