@@ -175,6 +175,7 @@ if added_files:
             print(" ".join(result.args))
             print(result.stdout)
             print()
+            print(os.listdir("."))
             os.chdir(cwd)
             npth = pth.with_suffix(sfx)
         elif pth.suffix.lower() in (".txt", ".fa", ".gb", ".fasta"):
