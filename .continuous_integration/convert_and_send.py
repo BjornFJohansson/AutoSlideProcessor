@@ -173,6 +173,8 @@ if added_files:
             result = subprocess.run( cmd, stdout=subprocess.PIPE)
             print(" ".join(result.args))
             print(result.stdout)
+            print(result.stderr)
+            print(result.returncode)
             print()
             print(os.listdir("."))
             os.chdir(cwd)
