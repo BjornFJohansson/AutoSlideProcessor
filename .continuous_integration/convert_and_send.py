@@ -29,6 +29,7 @@ cmd = "libreoffice --version".split()
 result = subprocess.run( cmd, stdout=subprocess.PIPE)
 print(" ".join( result.args ))
 print(result.stdout.decode())
+cmd = "pandoc --version".split()
 result = subprocess.run( cmd, stdout=subprocess.PIPE)
 print(" ".join( result.args ))
 print(result.stdout.decode())
@@ -51,18 +52,20 @@ def newsuffix(p):
         return p.suffix.lower()
         
 #============================== Connect to Dropbox ===========================
-with open(".continuous_integration/dropbox_token.txt", "r") as f:
-    TOKEN = f.read().strip()
+
+TOKEN = os.getenv(TOKENNAME, "")
 if not TOKEN:
-    TOKEN = os.getenv(TOKENNAME, "NONE")
+    with open(".continuous_integration/dropbox_token.txt", "r") as f:
+        TOKEN = f.read().strip()
+    
 dbx = dropbox.Dropbox(TOKEN)
+
 try:
     dbx.users_get_current_account()
 except dropbox.exceptions.AuthError as err:
     sys.exit("ERROR: Invalid access token; try re-generating an access token"
              "from the app console on the web.")
-
-    
+   
 #===============check if remote folder is empty ==============================        
 
 
@@ -70,8 +73,10 @@ if dbx.files_list_folder(str(FOLDERLOCATION.joinpath(FOLDERNAME))).entries:
     remote_empty = False
 else:
     remote_empty = True
-
+    
+print()
 print("try to open cached_sha1_checksum/last.sha1")
+print()
 
 try:
     f = open(".cached_sha1_checksum/last.sha1", "r")
@@ -115,8 +120,8 @@ if oldsum and not remote_empty:
     added_files = [pathlib.Path(f) for f in output.strip().splitlines()]
     
 else:
-    print("All files will be processed")
     print("remote empty", remote_empty)
+    print("all files will be processed")
     deleted_files = []
     added_files = [pathlib.Path(root).joinpath(name)
                  for root, dirs, files in os.walk(".")
@@ -124,6 +129,10 @@ else:
     renamed_files = []
 
 added_files = [p for p in added_files if not [d for d in p.parts if d.startswith(("_","."))]]
+
+for f in added_files:
+    print(f)
+print()
 
 os.makedirs(".cached_sha1_checksum", exist_ok=True)
 with open(".cached_sha1_checksum/last.sha1", "w") as f:
@@ -147,15 +156,16 @@ if deleted_files:
                 print(err)
                 #sys.exit()  
 else:
-    print("NO files deleted remotely.\n")
+    print("NO files deleted remotely.\n\n")
 
-print("The following new paths will be added to remote:")
+print("The following new paths will be added to dropbox:")
 if added_files:
     for pth in added_files:
+        print("*"*79)
+        print(pth)
         if pth.suffix.lower() in (".odt", ".odp", ".odg"): # writer, impress --> pdf
             cmd = "libreoffice --invisible --convert-to pdf".split()
             cmd.extend((str(pth), "--outdir", str(pth.parent)))
-            print(" ".join(cmd)) 
             result = subprocess.run( cmd, stdout=subprocess.PIPE)
             print(" ".join(result.args))
             print(result.stdout)
@@ -164,7 +174,6 @@ if added_files:
         elif pth.suffix.lower() == ".ods":  # calc --> Excel
             cmd = "libreoffice --invisible --convert-to xlsx".split()
             cmd.extend((str(pth), "--outdir", str(pth.parent)))
-            print(" ".join(cmd))
             result = subprocess.run( cmd, stdout=subprocess.PIPE)
             print(" ".join(result.args))
             print(result.stdout)      
@@ -184,11 +193,8 @@ if added_files:
                 sfx=".pdf"
             result = subprocess.run( cmd, stdout=subprocess.PIPE)
             print(" ".join(result.args))
-            print(result.stdout)
-            print(result.stderr)
-            print(result.returncode)
-            print()
-            print(os.listdir("."))
+            print("pandoc said", result.stdout)
+            print("pandoc return code (0=sucess)", result.returncode)
             os.chdir(cwd)
             npth = pth.with_suffix(sfx)
         elif pth.suffix.lower() in (".txt", ".fa", ".gb", ".fasta"):
@@ -199,7 +205,8 @@ if added_files:
             npth = pth
         else:
             npth = pth
-            
+        print("New path", npth)
+        print("New path exists?", npth.exists())
         rempth = FOLDERLOCATION.joinpath(FOLDERNAME, npth)
         print("uploading", npth, "to", rempth)
         print()
