@@ -1,58 +1,40 @@
-This repository shows how to distribute course files to students using Github and TravisCI.
+# TravisSlideProcessor
 
-I teach courses mostly in molecular biology and biotechnology. 
-My computer runs Ubuntu linux, and I use the LibreOffice (LO) package, while my students mostly use Windows or Macs with Ms Office.
+This repository contains code to automatically convert and distribute course files to students 
+using a combination of Git, Github, dropbox and TravisCI.
+
+## Motivation
+
+I teach courses mostly in molecular biology and biotechnology at 
+university level and I would like to share files such as slides and sequence files with my students.
+
+My computer runs [Ubuntu](https://www.ubuntu.com/) linux, and I use the [LibreOffice](https://www.libreoffice.org/download/download/) (LO) 
+package to create most content, while my students mostly use Windows or Macs with Ms Office.
+
 This means that files that I make are not always compatible with the software my students run. 
-I can make PDFs manually from LO, but then I would have to keep track of two sets of files.
-I also like ot keep files that I do not share with students. The TravisSlideProcessor ignores files and folders with names starting with "." or "_". 
- 
-# My Awesome Course 2016-17
+One solution is to create pdfs from the LO files which can be read by anyone with a pdf reader. 
+I could make PDFs manually from LO, but then I would have to keep track of two sets of files.
 
-[![Build Status](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor.png?branch=master)](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor)
+## What does TravisSlideProcessor do?
 
-Course:
-- [Licenciatura em Biologia Aplicada 2yr](http://www.bio.uminho.pt/Default.aspx?tabid=7&pageid=112&lang=pt-PT)
-
-Time & place:
-  
-- Monday  LABI DB Practical class
-- Tuesday CP3 305 Theoretical 11:00 - 12:00
-- Tuesday CP3 305 TP1 (TP Turno 1) 12:00 - 13:00
-- Tuesday Lab informática CPII TP2 (TP Turno 2) 17:00 - 18:00
-
-Teacher: 
-- Björn Johansson <bjorn_johansson@bio.uminho.pt>
-
-Delegad(o/a): 
-- Maria Aluna
-
-Course file dropbox [here](https://www.dropbox.com/sh/a4vwd1ux8h81mg8/AADceqVoh96TOCaNwUZvI976a?dl=0).
-
-Course literature: 
-- [GENE CLONING AND DNA ANALYSIS An Introduction T.A. BROWN 7ed](http://bcs.wiley.com/he-bcs/Books?action=index&bcsId=9980&itemId=1119072573)
-
-Calendar:
-
-<iframe src="https://calendar.google.com/calendar/embed?mode=WEEK&amp;height=600&amp;wkst=2&amp;bgcolor=%23FFFFFF&amp;src=e2fuohav3fujq4fu83ea6orbkk%40group.calendar.google.com&amp;color=%2329527A&amp;ctz=Europe%2FLisbon" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
-
-Extra literature:
-
-- [Molecular Biology of the Cell 4ed (free)](https://www.ncbi.nlm.nih.gov/books/NBK21054/)
-- [Bioinformatics for Dummies - 2007](http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0470089857.html)
-- [Lehninger Principles of Bichemistry](https://www.amazon.com/Lehninger-Principles-Biochemistry-David-Nelson/dp/1429234148)
-- [Stryer Biochemistry (5ed free)](https://www.ncbi.nlm.nih.gov/books/NBK21154/)
-- [The Selfish Gene](https://www.amazon.com/Selfish-Gene-Popular-Science/dp/0192860925/ref=cm_cr_arp_d_product_top?ie=UTF8)
-
-## How it works
-
-These files and folders are stored in a repository on [Github](https://github.com).
-On pushing file to the repository, automatic conversions are carried out as depicted in the figure below.
+TravisSlideProcessor converts files in a Git repository on [Github](https://github.com) (like this one). 
+Files in the directory tree are collected and converted to other formats according to the scheme below. 
 
 ![scheme](pictures/scheme.png)
 
-Except for the README.md, which is converted to html.
+Except for the README.md (this file), which is converted to html since it is meant to be a landing page for the 
+course (see the end of this page).
 
-After processing, all files and folders are pushed to a dropbox.
+The converted files are sent to a dropbox which can be made accesible to students. 
+See the files from this repository by using the "Course file dropbox" link below. 
+New or changed files should be committed to a local copy of the Git repository. 
+This can be a private repository if you want to keep the source files secret. 
+These changes are pushed to Github and TravisCI is activated to convert the files.
+After processing, the commit checksum is saved for next processing so that only files changed since are processed to save time.
+
+The TravisSlideProcessor ignores files and folders with names starting 
+with "." or "_" which I use to keep some files from processing (like work in progress).
+
 The process looks like this:
 
 1. TravisCI clones the repository.
@@ -75,6 +57,48 @@ The process looks like this:
 8. Change the url of the build status badge on this page.
 9. Create a folder on your dropbox that reflects the FOLDERLOCATION variable in ´.continuous_integration/convert_and_send.py´
 10. Test the conversion by trigger a build at TravisCI or pushing files to the repository
+
+See below for an example of how the README.md file can be used as a landing page for the course. 
+In this example, an embedded google calendar is used to as a course schedule.
+
+ 
+## TravisSlideProcessor Course 2016-17
+
+[![Build Status](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor.png?branch=master)](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor)
+
+Course:
+- [Licenciatura em Biologia Aplicada 2yr](http://www.bio.uminho.pt/Default.aspx?tabid=7&pageid=112&lang=pt-PT)
+
+Time & place:
+  
+- Monday  LABI DB Practical class
+- Tuesday CP3 305 Theoretical 11:00 - 12:00
+- Tuesday CP3 305 TP1 (TP Turno 1) 12:00 - 13:00
+- Tuesday Lab informática CPII TP2 (TP Turno 2) 17:00 - 18:00
+
+Teacher: 
+- Björn Johansson <bjorn_johansson@bio.uminho.pt>
+
+Delegad(o/a): 
+- Maria Aluna
+
+Course file dropbox [here](https://www.dropbox.com/sh/bw2ezo03rhth3hu/AABHP-A0Kh9gjYEgpw_7aGT6a?dl=0).
+
+Course literature: 
+- [GENE CLONING AND DNA ANALYSIS An Introduction T.A. BROWN 7ed](http://bcs.wiley.com/he-bcs/Books?action=index&bcsId=9980&itemId=1119072573)
+
+Calendar:
+
+![gcal](pictures/example_gcal.png)
+
+Extra literature:
+
+- [Molecular Biology of the Cell 4ed (free)](https://www.ncbi.nlm.nih.gov/books/NBK21054/)
+- [Bioinformatics for Dummies - 2007](http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0470089857.html)
+- [Lehninger Principles of Bichemistry](https://www.amazon.com/Lehninger-Principles-Biochemistry-David-Nelson/dp/1429234148)
+- [Stryer Biochemistry (5ed free)](https://www.ncbi.nlm.nih.gov/books/NBK21154/)
+- [The Selfish Gene](https://www.amazon.com/Selfish-Gene-Popular-Science/dp/0192860925/ref=cm_cr_arp_d_product_top?ie=UTF8)
+
 
 
 

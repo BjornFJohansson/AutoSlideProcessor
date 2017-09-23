@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-import pathlib      
-# only in python 3, see https://pypi.python.org/pypi/pathlib2/2.1.0 for python 2.7
+import pathlib
 ##########################################################
+
+# Set the three variables below. 
+
+# FOLDERLOCATION is the location of the course folder under the main Dropbox folder
 FOLDERLOCATION = pathlib.Path("/Public/BLACKBOARD")
-FOLDERNAME     = pathlib.Path("MyAwesomeCourse")
+FOLDERNAME     = pathlib.Path("TravisSlideProcessorCourse")
+# The TOKENNAME is the name of the Dropbox token needed to upload files.
 TOKENNAME      = "DROPBOXTOKEN"
+
 ##########################################################
 
 import re
@@ -21,8 +25,17 @@ print("dropbox.__version__ =", dropbox.__version__)
 import requests
 print("requests.__version__=", requests.__version__)
 del requests
-
-
+cmd = "libreoffice --version".split()
+result = subprocess.run( cmd, stdout=subprocess.PIPE)
+print(" ".join( result.args ))
+print(result.stdout.decode())
+result = subprocess.run( cmd, stdout=subprocess.PIPE)
+print(" ".join( result.args ))
+print(result.stdout.decode())
+cmd = "jupyter --version".split()
+result = subprocess.run( cmd, stdout=subprocess.PIPE)
+print(" ".join( result.args ))
+print(result.stdout.decode())
 ########################################################
 #with open(".cached_sha1_checksum/last.sha1", "w") as f:
 #    f.write('f14ba6fab9f5e3ff72ce21f90a10f2de4d7d186f')
