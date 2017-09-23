@@ -9,7 +9,8 @@ script:
   - sudo apt-get update -y
   - sudo apt-get install texlive-xetex texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra python-software-properties
   - cd markdown_files
-  - pandoc --latex-engine=xelatex -o "Microbial work.pdf" "Microbial work.md"
+  #- pandoc --latex-engine=xelatex -o "Microbial work.pdf" "Microbial work.md"
+  - python -c "import subprocess;cmd=['pandoc', '--latex-engine=xelatex', '-o', 'Microbial work.pdf', 'Microbial work.md'];result = subprocess.run( cmd, stdout=subprocess.PIPE)"
   - ls
 #  - pandoc --latex-engine=xelatex "README.md" -o "README.pdf"
 #  - pandoc --self-contained --to=html -o README.html README.md

@@ -169,7 +169,6 @@ if added_files:
                 cmd.append('"{}"'.format(pth.with_suffix('.pdf').name))
                 cmd.append('"{}"'.format(pth.name))
                 sfx=".pdf"
-            #print(" ".join(cmd)) 
             result = subprocess.run( cmd, stdout=subprocess.PIPE)
             print(" ".join(result.args))
             print(result.stdout)
