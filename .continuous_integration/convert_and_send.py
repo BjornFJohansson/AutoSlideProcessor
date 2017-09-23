@@ -160,17 +160,16 @@ if added_files:
         elif pth.suffix.lower() == ".md":  # markdown --> pdf
             cwd = os.getcwd()
             os.chdir(str(pth.parent))
-            print(os.listdir("."))
             if str(pth) == "README.md":
                 cmd = "pandoc --self-contained --to=html -o README.html README.md".split() # --css .continuous_integration/pandoc.css
                 sfx=".html"
             else:
                 cmd = 'pandoc --latex-engine=xelatex'.split()
-                cmd.append('"{}"'.format(pth.name))
                 cmd.append("-o")
                 cmd.append('"{}"'.format(pth.with_suffix('.pdf').name))
+                cmd.append('"{}"'.format(pth.name))
                 sfx=".pdf"
-            print(" ".join(cmd)) 
+            #print(" ".join(cmd)) 
             result = subprocess.run( cmd, stdout=subprocess.PIPE)
             print(" ".join(result.args))
             print(result.stdout)
