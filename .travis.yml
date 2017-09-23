@@ -10,6 +10,7 @@ script:
   - sudo apt-get install texlive-xetex texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra python-software-properties
   - cd markdown_files
   - pandoc --latex-engine=xelatex -o "Microbial work.pdf" "Microbial work.md"
+  - ls
 #  - pandoc --latex-engine=xelatex "README.md" -o "README.pdf"
 #  - pandoc --self-contained --to=html -o README.html README.md
 #  - pip install -I dropbox
