@@ -163,7 +163,15 @@ if added_files:
     for pth in added_files:
         print("*"*79)
         print(pth)
-        if pth.suffix.lower() in (".odt", ".odp", ".odg"): # writer, impress --> pdf
+        if pth.suffix.lower() == ".ipynb":
+            cmd = "jupyter nbconvert --to pdf".split()
+            cmd.append( str(pth) )
+            result = subprocess.run( cmd, stdout=subprocess.PIPE)
+            print(" ".join(result.args))
+            print(result.stdout)
+            print()        
+            npth = pth.with_suffix(".pdf")
+        elif pth.suffix.lower() in (".odt", ".odp", ".odg"): # writer, impress --> pdf
             cmd = "libreoffice --invisible --convert-to pdf".split()
             cmd.extend((str(pth), "--outdir", str(pth.parent)))
             result = subprocess.run( cmd, stdout=subprocess.PIPE)
