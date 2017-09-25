@@ -5,6 +5,11 @@ ini_path = "_settings.ini"
 
 import configparser
 import pathlib
+import re
+import os
+import sys
+import subprocess
+import codecs
 
 parser = configparser.ConfigParser()
 parser.read(ini_path)
@@ -15,14 +20,7 @@ FOLDERLOCATION = pathlib.Path( mainsection.get("FOLDERLOCATION", "/Public/BLACKB
 FOLDERNAME     = pathlib.Path( mainsection.get("FOLDERNAME",     "MyCourse" ))
 TOKENNAME      = mainsection.get( "TOKENNAME",                   "DROPBOXTOKEN" )
 
-import re
-import os
-import sys
-
-import subprocess
-import codecs
 import dropbox      # https://pypi.python.org/pypi/dropbox
-
 print("dropbox version =", dropbox.__version__)
 import requests
 print("requests version =", requests.__version__)
@@ -52,13 +50,21 @@ except dropbox.exceptions.AuthError as err:
     sys.exit("ERROR: Invalid access token; try re-generating an access token"
              "from the app console on the web.")
    
+#===============check if remote folder is exsists =============================        
+
+try:
+    metadata = dbx.files_get_metadata(str(FOLDERLOCATION))
+except ApiError:
+    
+
 #===============check if remote folder is empty ==============================        
 
-
-if dbx.files_list_folder(str(FOLDERLOCATION.joinpath(FOLDERNAME))).entries:
-    remote_empty = False
-else:
+try:
+    oldfiles = dbx.files_get_metadata(str(FOLDERLOCATION.joinpath(FOLDERNAME))).entries:
+except ApiError:
     remote_empty = True
+else:
+    remote_empty = bool(oldfiles)
     
 print()
 print("try to open cached_sha1_checksum/last.sha1")
