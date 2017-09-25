@@ -1,7 +1,8 @@
-# TravisSlideProcessor
+# AutoSlideProcessor
 
 This repository contains code to automatically convert and distribute course files to students 
-using a combination of Git, Github, dropbox and TravisCI.
+using a combination of Git, Github, TravisCI (or some other continuous integration service) and Dropbox.
+These are a combination of free open source software tools and services currently offered for free.
 
 ## Motivation
 
@@ -9,33 +10,36 @@ I teach courses mostly in molecular biology and biotechnology at
 university level and I would like to share files such as slides and sequence files with my students.
 
 My computer runs [Ubuntu](https://www.ubuntu.com/) linux, and I use the [LibreOffice](https://www.libreoffice.org/download/download/) (LO) 
-package to create most content, while my students mostly use Windows or Macs with Ms Office.
+package to create most content, while my students mostly use Windows or Macs with Microsoft Office.
 
 This means that files that I make are not always compatible with the software my students run. 
 One solution is to create pdfs from the LO files which can be read by anyone with a pdf reader. 
 I could make PDFs manually from LO, but then I would have to keep track of two sets of files.
 
-## What does TravisSlideProcessor do?
+## What does AutoSlideProcessor do?
 
-TravisSlideProcessor converts files in a Git repository on [Github](https://github.com) (like this one). 
+AutoSlideProcessor converts files in a Git repository on [Github](https://github.com) (like this one). 
 Files in the directory tree are collected and converted to other formats according to the scheme below. 
 
 ![scheme](pictures/scheme.png)
 
-Except for the README.md (this file), which is converted to html since it is meant to be a landing page for the 
-course (see the end of this page).
+An exception to the markdown->pdf rule is the README.md (this file), which is converted to html since 
+it is meant to be a landing page for the course (see further down on this page).
 
-The converted files are sent to a dropbox which can be made accesible to students. 
-See the files from this repository by using the "Course file dropbox" link below. 
-New or changed files should be committed to a local copy of the Git repository. 
+The converted files are sent to a dropbox which can be made accessible to students. 
+See the files from this repository by using the "Course file dropbox" link below.
+
+New or changed content files (slides, handouts etc.) should be committed to a local copy of the Git repository.
+These changes should be pushed to a remote Github repository. 
 This can be a private repository if you want to keep the source files secret. 
-These changes are pushed to Github and TravisCI is activated to convert the files.
+When changes are pushed to Github, TravisCI is activated and converts the files.
 After processing, the commit checksum is saved for next processing so that only files changed since are processed to save time.
+This means that not every local commit has to be pushed to remote.
 
-The TravisSlideProcessor ignores files and folders with names starting 
-with "." or "_" which I use to keep some files from processing (like work in progress).
+The AutoSlideProcessor ignores files and folders with names starting 
+with "." or "_" which I use to keep some files from the students (like work in progress).
 
-The process looks like this:
+The process looks like this in detail:
 
 1. TravisCI clones the repository.
 2. git rev-list HEAD gives a list of all SHA1 sums of all commits.
@@ -62,9 +66,9 @@ See below for an example of how the README.md file can be used as a landing page
 In this example, an embedded google calendar is used to as a course schedule.
 
  
-## TravisSlideProcessor Course 2016-17
+## MyCourse 2016-17
 
-[![Build Status](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor.png?branch=master)](https://travis-ci.org/BjornFJohansson/TravisSlideProcessor)
+[![Build Status](https://travis-ci.org/BjornFJohansson/AutoSlideProcessor.png?branch=master)](https://travis-ci.org/BjornFJohansson/AutoSlideProcessor)
 
 Course:
 - [Licenciatura em Biologia Aplicada 2yr](http://www.bio.uminho.pt/Default.aspx?tabid=7&pageid=112&lang=pt-PT)
