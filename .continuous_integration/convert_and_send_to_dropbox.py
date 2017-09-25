@@ -50,18 +50,11 @@ except dropbox.exceptions.AuthError as err:
     sys.exit("ERROR: Invalid access token; try re-generating an access token"
              "from the app console on the web.")
    
-#===============check if remote folder is exsists =============================        
-
-try:
-    metadata = dbx.files_get_metadata(str(FOLDERLOCATION))
-except ApiError:
-    
-
 #===============check if remote folder is empty ==============================        
 
 try:
-    oldfiles = dbx.files_get_metadata(str(FOLDERLOCATION.joinpath(FOLDERNAME))).entries:
-except ApiError:
+    oldfiles = dbx.files_get_metadata(str(FOLDERLOCATION.joinpath(FOLDERNAME))).entries
+except dropbox.exceptions.ApiError:
     remote_empty = True
 else:
     remote_empty = bool(oldfiles)
