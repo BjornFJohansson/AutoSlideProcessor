@@ -11,9 +11,9 @@ parser.read(ini_path)
 
 mainsection = parser["main"]
 
-FOLDERLOCATION = pathlib.Path( mainsection.get("FOLDERLOCATION", "TravisSlideProcessorCourse"))
-FOLDERNAME     = pathlib.Path( mainsection.get("FOLDERNAME",     "/Public/BLACKBOARD"))
-TOKENNAME      = mainsection.get( "TOKENNAME",      "DROPBOXTOKEN")
+FOLDERLOCATION = pathlib.Path( mainsection.get("FOLDERLOCATION", "/Public/BLACKBOARD" ))
+FOLDERNAME     = pathlib.Path( mainsection.get("FOLDERNAME",     "TravisSlideProcessorCourse" ))
+TOKENNAME      = mainsection.get( "TOKENNAME",                   "DROPBOXTOKEN" )
 
 import re
 import os
