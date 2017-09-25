@@ -53,7 +53,7 @@ except dropbox.exceptions.AuthError as err:
 #===============check if remote folder is empty ==============================        
 
 try:
-    oldfiles = dbx.files_get_metadata(str(FOLDERLOCATION.joinpath(FOLDERNAME))).entries
+    oldfiles = dbx.files_list_folder(str(FOLDERLOCATION.joinpath(FOLDERNAME))).entries
 except dropbox.exceptions.ApiError:
     remote_empty = True
 else:
