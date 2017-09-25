@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+ini_path = "_settings.ini"
+
+import configparser
 import pathlib
-##########################################################
 
-# Set the three variables below. 
+parser = configparser.ConfigParser()
+parser.read(ini_path)
 
-# FOLDERLOCATION is the location of the course folder under the main Dropbox folder
-FOLDERLOCATION = pathlib.Path("/Public/BLACKBOARD")
-FOLDERNAME     = pathlib.Path("TravisSlideProcessorCourse")
-# The TOKENNAME is the name of the Dropbox token needed to upload files.
-TOKENNAME      = "DROPBOXTOKEN"
+mainsection = parser["main"]
 
-##########################################################
+FOLDERLOCATION = pathlib.Path( mainsection.get("FOLDERLOCATION", "TravisSlideProcessorCourse"))
+FOLDERNAME     = pathlib.Path( mainsection.get("FOLDERNAME",     "/Public/BLACKBOARD"))
+TOKENNAME      = mainsection.get( "TOKENNAME",      "DROPBOXTOKEN")
 
 import re
 import os
@@ -21,35 +23,19 @@ import subprocess
 import codecs
 import dropbox      # https://pypi.python.org/pypi/dropbox
 
-print("dropbox.__version__ =", dropbox.__version__)
+print("dropbox version =", dropbox.__version__)
 import requests
-print("requests.__version__=", requests.__version__)
+print("requests version =", requests.__version__)
 del requests
 cmd = "libreoffice --version".split()
 result = subprocess.run( cmd, stdout=subprocess.PIPE)
-print(" ".join( result.args ))
 print(result.stdout.decode())
 cmd = "pandoc --version".split()
 result = subprocess.run( cmd, stdout=subprocess.PIPE)
-print(" ".join( result.args ))
 print(result.stdout.decode())
 cmd = "jupyter --version".split()
 result = subprocess.run( cmd, stdout=subprocess.PIPE)
-print(" ".join( result.args ))
-print(result.stdout.decode())
-########################################################
-#with open(".cached_sha1_checksum/last.sha1", "w") as f:
-#    f.write('f14ba6fab9f5e3ff72ce21f90a10f2de4d7d186f')
-########################################################
-
-def newsuffix(p):
-    try:
-        return {".odt": ".pdf",
-                ".odp": ".pdf",
-                ".ods": ".xlsx",
-                ".md" : ".pdf"}[p.suffix.lower()]
-    except KeyError:
-        return p.suffix.lower()
+print("Jupyter version", result.stdout.decode())
         
 #============================== Connect to Dropbox ===========================
 
@@ -85,8 +71,7 @@ except FileNotFoundError:
     oldsum = ""
 else:
     oldsum = f.read().strip()
-    print(".cached_sha1_checksum/last.sha1 read from file:")
-    print(oldsum)
+    print(".cached_sha1_checksum/last.sha1 read from file: ", oldsum)
     print()
     f.close()
 
@@ -130,6 +115,9 @@ else:
 
 added_files = [p for p in added_files if not [d for d in p.parts if d.startswith(("_","."))]]
 
+
+if not added_files:
+    print("No files changed")
 for f in added_files:
     print(f)
 print()
@@ -138,11 +126,18 @@ os.makedirs(".cached_sha1_checksum", exist_ok=True)
 with open(".cached_sha1_checksum/last.sha1", "w") as f:
     f.write(newsum)
 
-print("The following paths will be deleted remotely:")
-
 if deleted_files:
+    print("The following paths will be deleted in dropbox:")
     for pth in deleted_files:
-        npth = pth.with_suffix(newsuffix(pth))
+        try:
+            newsuffix = { ".odt":   ".pdf",
+                          ".odp":   ".pdf",
+                          ".ods":   ".xlsx",
+                          ".md" :   ".pdf",   
+                          ".ipynb": ".html"}[pth.suffix.lower()]
+        except KeyError:
+            newsuffix = pth.suffix.lower()
+        npth = pth.with_suffix(newsuffix)
         print(npth)
         try:
             dbx.files_delete(str(FOLDERLOCATION.joinpath(FOLDERNAME, npth)))
@@ -156,21 +151,23 @@ if deleted_files:
                 print(err)
                 #sys.exit()  
 else:
-    print("NO files deleted remotely.\n\n")
+    print("NO files will be deleted in dropbox.\n")
 
-print("The following new paths will be added to dropbox:")
+
 if added_files:
+    print("The following new paths will be added to dropbox:")
     for pth in added_files:
         print("*"*79)
+        print()
         print(pth)
         if pth.suffix.lower() == ".ipynb":
-            cmd = "jupyter nbconvert --to pdf".split()
+            cmd = "jupyter nbconvert --to html".split()
             cmd.append( str(pth) )
             result = subprocess.run( cmd, stdout=subprocess.PIPE)
             print(" ".join(result.args))
             print(result.stdout)
             print()        
-            npth = pth.with_suffix(".pdf")
+            npth = pth.with_suffix(".html")
         elif pth.suffix.lower() in (".odt", ".odp", ".odg"): # writer, impress --> pdf
             cmd = "libreoffice --invisible --convert-to pdf".split()
             cmd.extend((str(pth), "--outdir", str(pth.parent)))
@@ -223,6 +220,8 @@ if added_files:
                 dbx.files_upload(f.read(), 
                                  str(rempth), 
                                  mode=dropbox.files.WriteMode('overwrite'))
+            except FileNotFoundError:
+                print("not found", npth)
             except dropbox.exceptions.ApiError as err:
                 if (err.error.is_path() and
                         err.error.get_path().error.is_insufficient_space()):
@@ -232,9 +231,8 @@ if added_files:
                     #sys.exit()
                 else:
                     print(err)
-                    #sys.exit()        
+                    #sys.exit()
 else:
-    print("NO new paths added to remote\n")
+    print("NO new paths added to dropbox\n")
 
 print("done!")
-
